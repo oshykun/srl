@@ -1,0 +1,303 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SuperWinWin TT API",
+    "description": "Register/Login API",
+    "version": "1.0.0"
+  },
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/v1.0",
+  "consumes": [
+    "application/json",
+    "application/x-www-form-urlencoded"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/public/home": {
+      "x-swagger-router-controller": "public",
+      "get": {
+        "operationId": "homePage",
+        "summary": "render home page",
+        "description": "Endpoint for getting home page",
+        "tags": [
+          "Public EJS pages"
+        ],
+        "responses": {
+          "200": {
+            "description": "Home page"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/public/login": {
+      "x-swagger-router-controller": "public",
+      "get": {
+        "operationId": "login",
+        "summary": "render login page",
+        "description": "Endpoint for getting login page",
+        "tags": [
+          "Public EJS pages"
+        ],
+        "responses": {
+          "200": {
+            "description": "Login page"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/public/register": {
+      "x-swagger-router-controller": "public",
+      "get": {
+        "operationId": "register",
+        "summary": "render register page",
+        "description": "Endpoint for getting register page",
+        "tags": [
+          "Public EJS pages"
+        ],
+        "responses": {
+          "200": {
+            "description": "Register page"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/public/email_sent": {
+      "x-swagger-router-controller": "public",
+      "get": {
+        "operationId": "emailSent",
+        "summary": "render emailSent page",
+        "description": "Endpoint for getting emailSent page",
+        "tags": [
+          "Public EJS pages"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful email sent page"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/private/profile": {
+      "x-swagger-router-controller": "private",
+      "get": {
+        "operationId": "profile",
+        "summary": "render profile page",
+        "description": "Endpoint for getting profile page",
+        "tags": [
+          "Private EJS pages"
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile page"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "x-swagger-router-controller": "register",
+      "post": {
+        "operationId": "registerUser",
+        "summary": "register new user",
+        "description": "Endpoint for creating new user",
+        "tags": [
+          "Register"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "registerUserData",
+            "description": "The user data JSON",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/registerUserData"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "new user created"
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/email_confirm/{token}": {
+      "x-swagger-router-controller": "register",
+      "get": {
+        "operationId": "emailConfirm",
+        "summary": "Email confirmation",
+        "description": "Endpoint to confirm email and finish registration.",
+        "tags": [
+          "Register"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "description": "Confirmation token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login page."
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "x-swagger-router-controller": "login",
+      "post": {
+        "operationId": "login",
+        "summary": "login user",
+        "description": "Endpoint for login",
+        "tags": [
+          "Login/Logout"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "loginUserData",
+            "description": "The login user data JSON",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/loginUserData"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Login was successful."
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "x-swagger-router-controller": "login",
+      "get": {
+        "operationId": "logout",
+        "summary": "logout user",
+        "description": "Endpoint for logout",
+        "tags": [
+          "Login/Logout"
+        ],
+        "responses": {
+          "204": {
+            "description": "Logout was successful."
+          },
+          "500": {
+            "description": "error response",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "errorResponse": {
+      "type": "object",
+      "properties": {
+        "errorCode": {
+          "type": "string",
+          "description": "The error code"
+        },
+        "message": {
+          "type": "string",
+          "description": "The error description"
+        },
+        "reportId": {
+          "type": "string",
+          "description": "Id of report"
+        }
+      }
+    },
+    "registerUserData": {
+      "type": "object",
+      "required": [
+        "email",
+        "password",
+        "confirmPassword"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "loginUserData": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
