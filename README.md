@@ -1,4 +1,4 @@
-# SWW TT
+# SWW
 
 ## Prerequisites
 
