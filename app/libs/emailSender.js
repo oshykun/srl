@@ -17,7 +17,7 @@ class EmailSender {
         });
 
         this._defaultEmailOptions = {
-            from   : `"SWW TT" 👻 <${this._emailConfig.email}>`,
+            from   : `"SRL" 👻 <${this._emailConfig.email}>`,
             subject: 'Confirm email ✔',
         };
         this._logger.debug(`${EmailSender.name} - constructor`);
@@ -28,7 +28,7 @@ class EmailSender {
         return new Promise((resolve, reject) => {
             this._transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    reject(error);
+                    return reject(error);
                 }
                 this._logger.debug(`Email was successfully sent: ${info.messageId}`);
                 resolve();

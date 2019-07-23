@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { loggerConfig, ...config } = require('./config');
 const winston                     = require('winston');
 const App                         = require('./app');

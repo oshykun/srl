@@ -1,4 +1,4 @@
-# SWW
+# Simple Register and Login app, with simple serve side rendering
 
 ## Prerequisites
 
