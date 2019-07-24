@@ -33,3 +33,7 @@ app.use((req, res, next) => {
 })
 ```
 
+## TODOs:
+* Think of creating default constructor with some predefined/generated config -> `new TraceLogger()`
+* Think of adding proper jsdocs for `TraceLogger`, in order for developer open .js file and be able to understand which config params should be passed.
+
