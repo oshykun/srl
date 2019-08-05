@@ -13,7 +13,7 @@ npm install @hood/hoodjs-logger -P
 ``
 
 ## Usage
-You will need to be able to get TraceLogger for each request, the easiest way to achieve this, is to use [req.app property](#using-reqapp-property) of Express request.
+You will need to be able to get HoodLogger for each request, the easiest way to achieve this, is to use [req.app property](#using-reqapp-property) of Express request.
 Then you will need to add `rootLogger` and request tracing logger to you request, it can be achieved by [adding middlewares](#creating-a-middlewares).
 
 ### Using req.app property:
@@ -21,21 +21,21 @@ If you follow the pattern in which you create a module that just exports a middl
 That means, when you create an express app you can create a new property in it and set logger there, e.g. :
 
 ```js
-const express         = require('express');
-const { TraceLogger } = require('@hood/hoodjs-logger');
+const express        = require('express');
+const { HoodLogger } = require('@hood/hoodjs-logger');
 
 const app = express();
 
 const loggerOptions = {
-  min_level              : 'info',
-  'disable_trace_logging': false
+  minLevel            : 'info',
+  disableTraceLogging : false
 };
 
-const logger = new TraceLogger('example_general_logger', loggerOptions);
+const logger = new HoodLogger('example_general_logger', loggerOptions);
 
 app.example = { logger }
 ```
-Minimal configuration which is required in order to set up TraceLogger is only name for your logger.
+Minimal configuration which is required in order to set up HoodLogger is only name for your logger.
 Everything else is optional and can be added into `options` param, like disabling tracing at all -> `{ 'disable_trace_logging': true }` 
 
 And then you can get general logger in any middleware or controller, e.g.:
@@ -102,6 +102,5 @@ app.use(async (req, res, next) => {
 
 ## TODOs:
 * Test npm `logger` package, published into npm. 
-* We will need to fix `TraceLogger` functions and options -> use camel case, do not use underscore, e.g. `disable_trace_logging` should be `disableTraceLogging`
 
 

@@ -2,16 +2,16 @@ require('dotenv').config();
 
 const { loggerConfig, ...config } = require('./config');
 
-const { TraceLogger } = require('@hood/hoodjs-logger');
+const { HoodLogger } = require('@hood/hoodjs-logger');
 
 const App = require('./app');
 
 const loggerOptions = {
-  min_level              : loggerConfig.level,
-  'disable_trace_logging': loggerConfig.disableTrace
+  minLevel           : loggerConfig.level,
+  disableTraceLogging: loggerConfig.disableTrace
 };
 
-const logger = new TraceLogger(loggerConfig.name, loggerOptions);
+const logger = new HoodLogger(loggerConfig.name, loggerOptions);
 
 const app = new App(logger, config);
 
