@@ -64,9 +64,14 @@ class UserService {
         return this._dbConnectorFacade.users.updateUserStatus(userId, 'verified');
     }
 
-    async getUserByEmailAndPassword(email, password) {
-        this._logger.debug(`${UserService.name} - getUserByEmailAndPassword`);
+    async getUserByEmailAndPassword(email, password, options) {
+        const logger = (options && options.logger) || this._logger;
+        logger.debug(`${UserService.name} - getUserByEmailAndPassword`);
+
+        let internalLogger = logger.createChildTraceLogger('getUserByEmailAndPassword');
+        internalLogger.info('start');
         let user = await this._dbConnectorFacade.users.findVerifiedUserByEmail(email);
+        internalLogger.info('end', { status: 'end' });
 
         let inputFailsCount = this._cacheWrapper.getCachedValue(email) || 0;
         if (inputFailsCount >= this._maxLoginFails && user) {

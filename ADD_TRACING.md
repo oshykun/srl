@@ -1,15 +1,20 @@
 # Hood, adding trace logger:
 
+# Motivation
+tobe added...
+
+## Prerequisites
+
+Node version 10+ is required.
+
 ## Installation:
 ``
 npm install @hood/hoodjs-logger -P
 ``
 
 ## Usage
-There are two ways to add a trace logger into existing Express application. 
-First is to create a [middleware](#creating-middleware) and second is to use [req.app property](#using-reqapp-property) of Express request.
-
-### Creating middleware:
+You will need to be able to get TraceLogger for each request, the easiest way to achieve this, is to use [req.app property](#using-reqapp-property) of Express request.
+Then you will need to add `rootLogger` and request tracing logger to you request, it can be achieved by [adding middlewares](#creating-a-middlewares).
 
 ### Using req.app property:
 If you follow the pattern in which you create a module that just exports a middleware function and require() it in your main file, then the middleware can access the Express instance via req.app. 
@@ -21,11 +26,19 @@ const { TraceLogger } = require('@hood/hoodjs-logger');
 
 const app = express();
 
-const logger = new TraceLogger('loggerName', 'info', null, { 'disable_trace_logging': false });
+const loggerOptions = {
+  min_level              : 'info',
+  'disable_trace_logging': false
+};
+
+const logger = new TraceLogger('example_general_logger', loggerOptions);
+
 app.example = { logger }
 ```
+Minimal configuration which is required in order to set up TraceLogger is only name for your logger.
+Everything else is optional and can be added into `options` param, like disabling tracing at all -> `{ 'disable_trace_logging': true }` 
 
-And then you can get logger in any middleware or controller, e.g.:
+And then you can get general logger in any middleware or controller, e.g.:
 ```js
 app.use((req, res, next) => {
   const logger = req.app.example.logger;
@@ -33,7 +46,62 @@ app.use((req, res, next) => {
 })
 ```
 
+### Creating a middlewares:
+In order to use all capabilities of tracing, you need to use `root` and `child` loggers for each request.
+This can be easily achieved by adding two middleware functions. 
+One of them creates [rootLogger](#add-root-tracelogger-middleware) another [completes](#add-end-trace-middleware) tracing for HTTP request.
+And when you have [rootLogger](#add-root-tracelogger-middleware) you can start creating and using [child trace loggers](#use-root-logger-to-create-child-loggerstrace-spans)
+
+#### Add Root TraceLogger middleware:
+```js
+app.use((req, res, next) => {
+    const { logger } = req.app.example;
+
+    const rootLogger = logger.createRootTraceLogger('example_root_logger');
+
+    rootLogger.info(`Incoming HTTP request`, { type: req.url });
+
+    req.example.rootLogger = rootLogger;
+
+    res.set('x-cloud-trace-context', rootLogger.currentTraceId);
+
+    next();
+})
+```
+NOTE: If you don't specify `trace` for the `rootLogger`, then `current` and `parent` trace ids will automatically generated for you.
+For more details please see `options` jsdocs for `createRootTraceLogger()`.
+
+#### Add End Trace middleware:
+In order to finish tracing for HTTP request you need to create `end trace middleware`, which is just terminates tracing for particular HTTP request.
+NOTE: If yoy want to trace all middlewares this middleware should come the last one.
+```js
+app.use((req, res, next) => {
+  const { logger } = req.app.example;
+  
+  logger.info('end', { status: 'complete' });
+  
+  next();
+})
+```
+
+#### Use Root Logger to create child loggers(trace spans):
+In the controller you can grab `rootLogger` and create `child` one:
+ 
+```js
+app.use(async (req, res, next) => {
+  const rootLogger = req.example.rootLogger;
+  
+  let internalLogger = rootLogger.createChildTraceLogger('getUserById');
+  internalLogger.info('start');
+  let user = await userService.getUserById(req.params.id);
+  internalLogger.info('end', { status: 'end' });
+  
+  next()
+})
+```
+
 ## TODOs:
-* Think of creating default constructor with some predefined/generated config -> `new TraceLogger()`
-* Think of adding proper jsdocs for `TraceLogger`, in order for developer open .js file and be able to understand which config params should be passed.
+* Test npm `logger` package, published into npm. 
+* We will need to fix `TraceLogger` functions and options -> use camel case, do not use underscore, e.g. `disable_trace_logging` should be `disableTraceLogging`
+
 
