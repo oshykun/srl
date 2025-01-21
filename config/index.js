@@ -3,7 +3,10 @@ const swaggerDoc = require(DOC_PATH);
 
 module.exports = {
   loggerConfig : {
-    level: 'info'
+    name : 'srl-trace-logger',
+    level: 'info',
+    disableTrace: false,
+
   },
   serverConfig : {
     port           : process.env.SWW_SERVER_PORT || 8080,
